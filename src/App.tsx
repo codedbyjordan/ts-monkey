@@ -55,7 +55,7 @@ export default function App() {
           className="text-xl max-h-full overflow-y-auto [scrollbar-color:#928374_transparent] [scrollbar-width:thin]"
         />
         <div
-          className="bg-gruvbox-bg w-full h-full text-white font-mono p-2"
+          className="bg-gruvbox-bg w-full h-full text-white font-mono p-2 border-l border-l-gruvbox-gray"
           id="console-output"
           ref={consoleOutputRef}
         ></div>
