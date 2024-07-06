@@ -8,7 +8,6 @@ type UseKeybindsOptions = {
 export default function useKeybinds({ save, run }: UseKeybindsOptions) {
   const handleKeyPress = (event: KeyboardEvent) => {
     if (event.ctrlKey && event.key === "s") {
-      console.log("HERE");
       event.preventDefault();
       event.stopPropagation();
       save();

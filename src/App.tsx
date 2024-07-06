@@ -1,18 +1,26 @@
 import { javascript } from "@codemirror/lang-javascript";
 import { gruvboxDarkInit } from "@uiw/codemirror-theme-gruvbox-dark";
 import CodeMirror from "@uiw/react-codemirror";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import executeJs from "./utils/execute-js";
 import transpile from "./utils/transpile";
 import Toolbar from "./components/toolbar";
 import useKeybinds from "./hooks/useKeybinds";
+import { loadFile, saveFile } from "./utils/file-management";
 
 export default function App() {
-  const [code, setCode] = useState("console.log('hello world!');");
+  const [code, setCode] = useState("");
   const consoleOutputRef = useRef<HTMLDivElement>(null);
 
   const onChange = useCallback((newCode: string) => {
     setCode(newCode);
+  }, []);
+
+  useEffect(() => {
+    const loadedFile = loadFile();
+    if (loadedFile) {
+      setCode(loadedFile);
+    }
   }, []);
 
   const clearConsoleOutput = () => {
@@ -31,12 +39,12 @@ export default function App() {
 
   useKeybinds({
     run: transpileAndExecute,
-    save: () => {},
+    save: () => saveFile(code),
   });
 
   return (
     <div className="flex flex-col w-full h-screen">
-      <Toolbar save={() => {}} run={transpileAndExecute} />
+      <Toolbar save={() => saveFile(code)} run={transpileAndExecute} />
       <div className="w-full h-full grid grid-cols-2">
         <CodeMirror
           value={code}
