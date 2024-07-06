@@ -4,6 +4,8 @@ import CodeMirror from "@uiw/react-codemirror";
 import { useCallback, useRef, useState } from "react";
 import executeJs from "./utils/execute-js";
 import transpile from "./utils/transpile";
+import Toolbar from "./components/toolbar";
+import useKeybinds from "./hooks/useKeybinds";
 
 export default function App() {
   const [code, setCode] = useState("console.log('hello world!');");
@@ -27,17 +29,22 @@ export default function App() {
     }
   }, [code]);
 
+  useKeybinds({
+    run: transpileAndExecute,
+    save: () => {},
+  });
+
   return (
     <div className="flex flex-col w-full h-screen">
-      <button onClick={transpileAndExecute}>Run</button>
+      <Toolbar save={() => {}} run={transpileAndExecute} />
       <div className="w-full h-full grid grid-cols-2">
         <CodeMirror
           value={code}
-          height="100vh"
+          height="100%"
           extensions={[javascript({ typescript: true })]}
           onChange={onChange}
           theme={gruvboxDarkInit()}
-          className="text-xl"
+          className="text-xl max-h-full overflow-y-auto [scrollbar-color:#928374_transparent] [scrollbar-width:thin]"
         />
         <div
           className="bg-gruvbox-bg w-full h-full text-white font-mono p-2"
