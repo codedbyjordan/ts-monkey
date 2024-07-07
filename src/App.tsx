@@ -7,10 +7,18 @@ import transpile from "./utils/transpile";
 import Toolbar from "./components/toolbar";
 import useKeybinds from "./hooks/useKeybinds";
 import { loadFile, saveFile } from "./utils/file-management";
+import WelcomeAlert from "./components/welcome-alert";
+
+const ALERT_LOCALSTORAGE_KEY = "ts-monkey-welcome-alert";
 
 export default function App() {
   const [code, setCode] = useState("");
   const consoleOutputRef = useRef<HTMLDivElement>(null);
+  const hasViewedWelcomeAlert =
+    localStorage.getItem(ALERT_LOCALSTORAGE_KEY) === "true";
+  const [isWelcomeAlertOpen, setIsWelcomeAlertOpen] = useState(
+    !hasViewedWelcomeAlert
+  );
 
   const onChange = useCallback((newCode: string) => {
     setCode(newCode);
@@ -44,7 +52,15 @@ export default function App() {
 
   return (
     <div className="flex flex-col w-full h-screen">
-      <Toolbar save={() => saveFile(code)} run={transpileAndExecute} />
+      <WelcomeAlert
+        isOpen={isWelcomeAlertOpen}
+        onClose={() => setIsWelcomeAlertOpen(false)}
+      />
+      <Toolbar
+        save={() => saveFile(code)}
+        run={transpileAndExecute}
+        openWelcomeAlert={() => setIsWelcomeAlertOpen(true)}
+      />
       <div className="w-full h-full grid grid-cols-2">
         <CodeMirror
           value={code}
